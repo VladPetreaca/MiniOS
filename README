@@ -1,0 +1,39 @@
+-------READMEEE------
+	---Petreaca Vlad-Florin 323 CB------
+local: 85/85 0735043439
+
+
+-o sa incep prin a detalia putin structurile facute:
+	-structura unui proces:
+		-am un pid, prioritate,timp de executie,dimensiunea memoriei,start_memorie unde salvez inceputul memoriei la care se scrie procesul in memorie;executed_time in care salvez timpul total executat;variabila back_in_time in care pun initial cat are voie un procesor sa execute;starea acestuia care poate fi :running,waiting sau finished;si o stiva implementata cu liste generice pentru ca fiecare proces sa poata da pop si push pe propria stiva
+
+	-structura de memorie:
+		-aici retin dimensiunea pentru stiva de memorie a proceselor;o lista generica in care tin pid-urile care vor fi disponibile dupa terminarea mai multor procese;stiva de memorie propriu-zisa;coada proceselor care sunt in asteptare;coada proceslor care s-au terminat si o variabila de tip proces in care retin procesul care ruleaza
+
+	-structura pentru o celula care va fi introdusa in stiva de memorie propriu-zisa:
+		-am un pid care va coincide cu pid-ul procesului care ruleaza sau se afla in caoda de asteptare;un start de memorie in care retin de la ce zona de memorie pleaca procesul;un sfarsit de memorie in care retin cat spatiu ocupa cu tot cu dimensiunea procesului;dimensiunea procesului si memoria ramasa care initial este nula si va deveni egala cu memoria procesului care va fi scos din stiva de memorie
+
+
+
+-deschid fisiere in main,citesc cuanta de timp de la inceputul fisierului si aloc structura de memorie pentru procese.Imediat dupa, in stiva de memorie a proceselor adaug o celula cu caracteristicile procesului idle si incep sa citesc din fisier comenzile:
+	-comanda add : creez noul proces pe care trebuie sa il adaug si verific daca stiva de memorie dipsune de spatiu pentru a introduce noul proces.Folosindu-ma de o functie auxiliara(cautaMemorie_AdaugProces) verific daca intre procesele din stiva de memorie exista spatiu pentru a introduce un proces(si il introduc daca se poate) si nu neaaparat sa il pun in varful stivei.Dacaa nu exista, creez o celula pentru memorie si o pun in varful stivei cu caracteristicile noului proces care ori va fi adaugat direct in variabila de rulare,ori va fi inserat ordonat in coada de asteptare
+
+	-comanda print: aici am o variabila si citesc din fisier ce trebuie sa afisez:waiting,finished sau stack(in caz de stack o sa mai citesc si pid-ul).Pentru fiecare afisare ma folosesc de cate o functie auxiliara:Afisare proces sau afisare int(pentru stiva unui proces).
+
+	-comanda get: citesc pid-ul din fisier si verific in ordine(procesul in starea running,waiting sau finished) in ce stare sa afla procesul cu pid-ul respectiv si fac afisarea corespunzatoare
+
+	-comanda push: citesc pidul din fisier si cand am gasit procesul respectiv ii adaug in stiva elementul si scad din dimensiunea lui 4(numarul de octeti) aratand cata memorie mai este disponibila pentru a adauga elemente in stiva procesului
+
+	-comanda pop:citesc pid-ul din fisier si cand am gasit procesul repsectiv scot din stiva procesului elementul din varful stivei si cresc dimensiunea cu 4 semn ca s-a mai eliberat memorie
+
+	-comanda run: citesc din fisier cat timp are de executat comanda run.Apoi cat timp numarul citit este mai mare decat 0 iau minimul dintre cuanta maxima pe care o poate executa un proces si cat mai are el de executat.
+		-In caz ca procesul se termina se adauga n coada proceselor terminate si se elibereaza memoria din stiva(facandu-se pid-ul care ii era atribuit procesului -1 in stiva de memorie).Cand se termina un proces ma folosesc de o functie(rearanjareMemorie) petntru a reduce mai multe spatii goale de memorie(cu pid -1) consecutive la un spatiu avand ca dimensiune suma lor.Daca
+		un spatiu gol este in varful stivei este eliminat direct.
+
+		-in caz ca procesul nu se termina si si-a executat cuanta,se va pune in starea waiting.Va fi scos din caoda de asteptare un alt proces, daca este posibil, si va fi setat ca running, cel anterior inserandu-se ordonat in coada de asteptare.
+
+
+		-daca timpul de rulare se termina iar un proces nu si-a terminat cuanta,va ramane in starea running pana cand va primi din nou o comanda de rulare
+
+
+	-comanda finish: retin intr-o variabila cat timp mai este nevoie pentru a se termina toate procesele din coada de asteptare inclusiv cel care ruleaza daca este cazul
